@@ -26,7 +26,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['form_type']) && $_POST
     $specialRequests = $conn->real_escape_string(trim($_POST['specialRequests'] ?? ''));
 
     // Prepare SQL query
-    $sql = "INSERT INTO table_bookings 
+    $sql = "INSERT INTO bookings 
             (customer_name, customer_phone, customer_email, party_size, booking_date, booking_time, special_requests) 
             VALUES (?, ?, ?, ?, ?, ?, ?)";
 
