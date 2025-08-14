@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>QuickBite - Fast Food Delivery</title>
+</head>
+<body>
+    <header>
+        <nav class="container">
+            <div class="logo">🍔 LAZY FAST FOOD</div>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#menu">Menu</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#booking">Book Table</a></li>
+            </ul>
+            <button class="cart-btn" onclick="openCart()">
+                🛒 Cart
+                <span class="cart-count" id="cartCount">0</span>
+            </button>
+        </nav>
+    </header>
+
+    <section id="home" class="hero">
+        <div class="hero-content">
+            <h1>Delicious Food, Fast Delivery</h1>
+            <p>Order your favorite fast food and get it delivered in 30 minutes!</p>
+            <a href="#menu" class="cta-btn">Order Now</a>
+        </div>
+    </section>
+
+    <section id="menu" class="menu">
+        <div class="container">
+            <h2 class="section-title">Our Menu</h2>
+            
+            <div class="menu-categories">
+                <button class="category-btn active" onclick="filterMenu('all')">All</button>
+                <button class="category-btn" onclick="filterMenu('burgers')">Burgers</button>
+                <button class="category-btn" onclick="filterMenu('pizza')">Pizza</button>
+                <button class="category-btn" onclick="filterMenu('sides')">Sides</button>
+                <button class="category-btn" onclick="filterMenu('drinks')">Drinks</button>
+            </div>
+
+            <div class="menu-grid" id="menuGrid">
+                <!-- Menu items will be populated by JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Cart Modal -->
+    <div id="cartModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Your Cart</h2>
+                <button class="close-btn" onclick="closeCart()">&times;</button>
+            </div>
+            <div id="cartItems">
+                <!-- Cart items will be populated by JavaScript -->
+            </div>
+            <div class="cart-total" id="cartTotal">Total: $0.00</div>
+            <button class="checkout-btn" onclick="checkout()">Checkout</button>
+        </div>
+    </div>
+
+    <!-- Book a Table Section -->
+    <section id="booking" class="booking">
+        <div class="container">
+            <h2 class="section-title">Book a Table</h2>
+            <p class="booking-subtitle">Reserve your table for dine-in experience at QuickBite!</p>
+            
+            <div class="booking-container">
+                <form id="bookingForm" class="booking-form" action="data.php" method="POST">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="customerName">Full Name *</label>
+                            <input type="text" id="customerName" name="customerName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="customerPhone">Phone Number *</label>
+                            <input type="tel" id="customerPhone" name="customerPhone" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="customerEmail">Email Address</label>
+                            <input type="email" id="customerEmail" name="customerEmail">
+                        </div>
+                        <div class="form-group">
+                            <label for="partySize">Party Size *</label>
+                            <select id="partySize" name="partySize" required>
+                                <option value="">Select party size</option>
+                                <option value="1">1 Person</option>
+                                <option value="2">2 People</option>
+                                <option value="3">3 People</option>
+                                <option value="4">4 People</option>
+                                <option value="5">5 People</option>
+                                <option value="6">6 People</option>
+                                <option value="7">7 People</option>
+                                <option value="8">8+ People</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="bookingDate">Preferred Date *</label>
+                            <input type="date" id="bookingDate" name="bookingDate" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="bookingTime">Preferred Time *</label>
+                            <select id="bookingTime" name="bookingTime" required>
+                                <option value="">Select time</option>
+                                <option value="11:00">11:00 AM</option>
+                                <option value="11:30">11:30 AM</option>
+                                <option value="12:00">12:00 PM</option>
+                                <option value="12:30">12:30 PM</option>
+                                <option value="13:00">1:00 PM</option>
+                                <option value="13:30">1:30 PM</option>
+                                <option value="14:00">2:00 PM</option>
+                                <option value="14:30">2:30 PM</option>
+                                <option value="15:00">3:00 PM</option>
+                                <option value="15:30">3:30 PM</option>
+                                <option value="16:00">4:00 PM</option>
+                                <option value="16:30">4:30 PM</option>
+                                <option value="17:00">5:00 PM</option>
+                                <option value="17:30">5:30 PM</option>
+                                <option value="18:00">6:00 PM</option>
+                                <option value="18:30">6:30 PM</option>
+                                <option value="19:00">7:00 PM</option>
+                                <option value="19:30">7:30 PM</option>
+                                <option value="20:00">8:00 PM</option>
+                                <option value="20:30">8:30 PM</option>
+                                <option value="21:00">9:00 PM</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group full-width">
+                        <label for="specialRequests">Special Requests</label>
+                        <textarea id="specialRequests" name="specialRequests" rows="4" placeholder="Any special dietary requirements, celebrations, or other requests..."></textarea>
+                    </div>
+                    
+                    <!-- Hidden field to identify form type -->
+                    <input type="hidden" name="form_type" value="table_booking">
+                    
+                    <button type="submit" class="submit-btn">Book Table</button>
+                </form>
+                
+                <div id="bookingSuccess" class="booking-confirmation" style="display: none;">
+                    <div class="confirmation-icon">✅</div>
+                    <h3>Booking Submitted Successfully!</h3>
+                    <div class="confirmation-details">
+                        <h4>Thank you for your reservation request!</h4>
+                        <p>Your booking has been saved to our database and we will contact you shortly to confirm your reservation.</p>
+                        <p><strong>What happens next:</strong></p>
+                        <ul style="text-align: left; margin: 1rem 0;">
+                            <li>Our team will review your request within 2 hours</li>
+                            <li>We'll call you at the provided phone number to confirm</li>
+                            <li>You'll receive a confirmation email if provided</li>
+                            <li>Please arrive 10 minutes before your reserved time</li>
+                        </ul>
+                        <p style="color: #ff6b35; font-weight: 600;">
+                            For immediate assistance, call us at (555) 123-4567
+                        </p>
+                    </div>
+                    <button type="button" onclick="resetForm()" class="reset-btn">Make Another Booking</button>
+                </div>
+                <!-- Error message will be shown if there's a database error -->
+                <div id="bookingError" class="booking-error" style="display: none;">
+                    <div class="error-icon">❌</div>
+                    <h3>Booking Failed</h3>
+                    <div class="error-details">
+                        <p>Sorry, there was an error processing your booking. Please try again or contact us directly.</p>
+                        <p style="color: #dc3545; font-weight: 600;">
+                            Call us at (555) 123-4567 for immediate assistance
+                        </p>
+                    </div>
+                    <button type="button" onclick="resetForm()" class="reset-btn">Try Again</button>
+                </div>
+            </div>
+            
+            <div class="booking-info">
+                <div class="info-card">
+                    <h4>📍 Location</h4>
+                    <p>bertam resort<br>kepala batas,pulau pinang</p>
+                </div>
+                <div class="info-card">
+                    <h4>🕒 Opening Hours</h4>
+                    <p>Mon-Thu: 11:00 AM - 10:00 PM<br>Fri-Sun: 11:00 AM - 11:00 PM</p>
+                </div>
+                <div class="info-card">
+                    <h4>📞 Contact</h4>
+                    <p>Phone: (60) 123-4567<br>Email: bookings@fastfood.com</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 LAZYFASTFOOD. All rights reserved. Fast food, faster delivery!</p>
+        </div>
+    </footer>
+
+    <!--JAVASCRPT-->
+    <script>
+        // Menu data
+        const menuItems = [
+            {
+                id: 1,
+                name: "Classic Burger",
+                description: "Juicy beef patty with lettuce, tomato, and special sauce",
+                price: 9.99,
+                category: "burgers",
+                image: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400&h=300&fit=crop&auto=format"
+            },
+            {
+                id: 2,
+                name: "Cheese Pizza",
+                description: "Fresh mozzarella cheese on crispy thin crust",
+                price: 15.99,
+                category: "pizza",
+                image: "cheespiza.jpg" // Placeholder, replace with actual image URL
+            },
+            {
+                id: 3,
+                name: "Chicken Wings",
+                description: "Spicy buffalo wings with blue cheese dip",
+                price: 6.99,
+                category: "sides",
+                image: "https://images.unsplash.com/photo-1567620832903-9fc6debc209f?w=400&h=300&fit=crop&auto=format"
+            },
+            {
+                id: 4,
+                name: "Coca Cola",
+                description: "Ice-cold refreshing soft drink",
+                price: 2.99,
+                category: "drinks",
+                image: "cola.jpg" // Placeholder, replace with actual image URL
+            },
+            {
+
+                id: 5,
+                name: "Double Cheeseburger",
+                description: "Two beef patties with double cheese and bacon",
+                price: 14.99,
+                category: "burgers",
+                image: "burger2.jpg" // Placeholder, replace with actual image URL
+            },
+            {
+                id: 6,
+                name: "Pepperoni Pizza",
+                description: "Classic pepperoni with mozzarella cheese",
+                price: 20.99,
+                category: "pizza",
+                image: "https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=400&h=300&fit=crop&auto=format"
+            },
+            {
+                id: 7,
+                name: "French Fries",
+                description: "Golden crispy fries with sea salt",
+                price: 5.99,
+                category: "sides",
+                image: "https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=400&h=300&fit=crop&auto=format"
+            },
+            {
+                id: 8,
+                name: "Milkshake",
+                description: "Creamy vanilla milkshake with whipped cream",
+                price: 5.99,
+                category: "drinks",
+                image: "https://images.unsplash.com/photo-1572490122747-3968b75cc699?w=400&h=300&fit=crop&auto=format"
+            }
+        ];
+
+// Cart state
+        let cart = [];
+        let currentFilter = 'all';
+
+        // Table booking functionality - Simplified for HTML form
+        let bookings = [];
+
+        // Set minimum date to today and handle form submission via URL parameters
+        document.addEventListener('DOMContentLoaded', function() {
+            renderMenu();
+            updateCartCount();
+            
+            // Set minimum date for booking
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('bookingDate').min = today;
+            
+            // Check if form was submitted (URL contains parameters)
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.has('customerName')) {
+                showBookingSuccess();
+            }
+        });
+
+        function showBookingSuccess() {
+            const form = document.getElementById('bookingForm');
+            const success = document.getElementById('bookingSuccess');
+            
+            form.style.display = 'none';
+            success.style.display = 'block';
+            
+            // Scroll to confirmation
+            success.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function resetForm() {
+            const form = document.getElementById('bookingForm');
+            const success = document.getElementById('bookingSuccess');
+            
+            // Clear URL parameters
+            window.history.replaceState({}, document.title, window.location.pathname);
+            
+            form.reset();
+            form.style.display = 'block';
+            success.style.display = 'none';
+            
+            // Reset minimum date
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('bookingDate').min = today;
+            
+            // Scroll back to form
+            form.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Render menu items
+        function renderMenu() {
+            const menuGrid = document.getElementById('menuGrid');
+            const filteredItems = currentFilter === 'all' 
+                ? menuItems 
+                : menuItems.filter(item => item.category === currentFilter);
+
+            menuGrid.innerHTML = '';
+            
+            filteredItems.forEach((item, index) => {
+                const menuItemHTML = `
+                    <div class="menu-item" style="animation-delay: ${index * 0.1}s">
+                        <img src="${item.image}" alt="${item.name}" style="width: 100%; height: 200px; object-fit: cover;">
+                        <div class="item-content">
+                            <h3 class="item-title">${item.name}</h3>
+                            <p class="item-description">${item.description}</p>
+                            <div class="item-footer">
+                                <span class="item-price">${item.price.toFixed(2)}</span>
+                                <button class="add-btn" onclick="addToCart(${item.id})">Add to Cart</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                menuGrid.innerHTML += menuItemHTML;
+            });
+        }
+
+        // Filter menu by category
+        function filterMenu(category) {
+            currentFilter = category;
+            
+            // Update active button
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            renderMenu();
+        }
+
+        // Add item to cart
+        function addToCart(itemId) {
+            const item = menuItems.find(item => item.id === itemId);
+            const existingItem = cart.find(cartItem => cartItem.id === itemId);
+            
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                cart.push({...item, quantity: 1});
+            }
+            
+            updateCartCount();
+            
+            // Add animation feedback
+            event.target.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                event.target.style.transform = 'scale(1)';
+            }, 150);
+        }
+
+        // Update cart count
+        function updateCartCount() {
+            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+            document.getElementById('cartCount').textContent = totalItems;
+        }
+
+        // Open cart modal
+        function openCart() {
+            document.getElementById('cartModal').style.display = 'block';
+            renderCart();
+        }
+
+        // Close cart modal
+        function closeCart() {
+            document.getElementById('cartModal').style.display = 'none';
+        }
+
+        // Render cart items
+        function renderCart() {
+            const cartItems = document.getElementById('cartItems');
+            const cartTotal = document.getElementById('cartTotal');
+            
+            if (cart.length === 0) {
+                cartItems.innerHTML = '<p style="text-align: center; color: #666; padding: 2rem;">Your cart is empty</p>';
+                cartTotal.textContent = 'Total: $0.00';
+                return;
+            }
+            
+            let cartHTML = '';
+            let total = 0;
+            
+            cart.forEach(item => {
+                const itemTotal = item.price * item.quantity;
+                total += itemTotal;
+                
+                cartHTML += `
+                    <div class="cart-item">
+                        <div>
+                            <h4>${item.name}</h4>
+                            <p>$${item.price.toFixed(2)} each</p>
+                        </div>
+                        <div class="quantity-controls">
+                            <button class="qty-btn" onclick="updateQuantity(${item.id}, -1)">-</button>
+                            <span>${item.quantity}</span>
+                            <button class="qty-btn" onclick="updateQuantity(${item.id}, 1)">+</button>
+                            <button class="qty-btn" onclick="removeFromCart(${item.id})" style="background: #dc3545; margin-left: 10px;">×</button>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            cartItems.innerHTML = cartHTML;
+            cartTotal.textContent = `Total: $${total.toFixed(2)}`;
+        }
+
+        // Update item quantity
+        function updateQuantity(itemId, change) {
+            const item = cart.find(cartItem => cartItem.id === itemId);
+            if (item) {
+                item.quantity += change;
+                if (item.quantity <= 0) {
+                    removeFromCart(itemId);
+                    return;
+                }
+                updateCartCount();
+                renderCart();
+            }
+        }
+
+        // Remove item from cart
+        function removeFromCart(itemId) {
+            cart = cart.filter(item => item.id !== itemId);
+            updateCartCount();
+            renderCart();
+        }
+
+        // Checkout function
+        function checkout() {
+            if (cart.length === 0) {
+                alert('Your cart is empty!');
+                return;
+            }
+            
+            const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            alert(`Thank you for your order! Total: $${total.toFixed(2)}\n\nYour food will be delivered in 25-30 minutes!`);
+            
+            // Clear cart
+            cart = [];
+            updateCartCount();
+            closeCart();
+        }
+
+        // Smooth scrolling for navigation
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('cartModal');
+            if (event.target === modal) {
+                closeCart();
+            }
+        }
+    </script>
+</body>
+</html>
